@@ -121,15 +121,14 @@ static void native_waitByteTimes(JNIEnv *env, jobject, jlong ptr, jint count)
 
 static jint native_read(JNIEnv *env, jobject, jlong ptr, jbyteArray jbuffer, jint offset, jint size)
 {
-    LOGI("native_read(0x%08llx,%p,%d,%d)", ptr, jbuffer, offset, size);
+    LOGD("native_read(0x%08llx,%p,%d,%d)", ptr, jbuffer, offset, size);
     Serial * com = (Serial *)ptr;
     jbyte* jarray = env->GetByteArrayElements(jbuffer, NULL);
     if (jarray) {
         uint8_t * buffer = (uint8_t *)(jarray + offset);
-        LOGI("buffer = %p, size=%d", buffer, size);
         _BEGIN_TRY
             int bytesRead = com->read(buffer, (size_t)size);
-            LOGI("bytes read = %d", bytesRead);
+            LOGD("bytes read = %d", bytesRead);
             env->ReleaseByteArrayElements(jbuffer, jarray, 0);
             return (jint)bytesRead;
         _CATCH_AND_THROW(env, invalid_argument, gIllegalArgumentException)
@@ -177,15 +176,14 @@ static jobjectArray native_readlines(JNIEnv *env, jobject, jlong ptr, jint size,
 
 static jint native_write(JNIEnv *env, jobject, jlong ptr, jbyteArray jdata, jint size)
 {
-    LOGI("native_write(0x%08llx,%p,%d)", ptr, jdata, size);
+    LOGD("native_write(0x%08llx,%p,%d)", ptr, jdata, size);
     Serial * com = (Serial *)ptr;
     jbyte* jarray = env->GetByteArrayElements(jdata, NULL);
     if (jarray) {
         uint8_t * data = (uint8_t *)jarray;
-        LOGI("data = %p, size=%d", data, size);
         _BEGIN_TRY
             int bytesWritten = com->write(data, (size_t)size);
-            LOGI("bytes written = %d", bytesWritten);
+            LOGD("bytes written = %d", bytesWritten);
             env->ReleaseByteArrayElements(jdata, jarray, JNI_ABORT);
             return (jint)bytesWritten;
         _CATCH_AND_THROW(env, invalid_argument, gIllegalArgumentException)
