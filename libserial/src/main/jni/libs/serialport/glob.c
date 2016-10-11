@@ -163,6 +163,11 @@ static int	 match(Char *, Char *, Char *);
 static void	 qprintf(const char *, Char *);
 #endif
 
+int issetugid_bionic(void) {
+    /* for Bionic, this is sufficient */
+    return 0;
+}
+
 int
 glob(const char *pattern, int flags, int (*errfunc)(const char *, int), glob_t *pglob)
 {
@@ -391,7 +396,7 @@ globtilde(const Char *pattern, Char *patbuf, size_t patbuf_len, glob_t *pglob)
 		 * we're not running setuid or setgid) and then trying
 		 * the password file
 		 */
-		if (issetugid() != 0 ||
+		if (issetugid_bionic() != 0 ||
 		    (h = getenv("HOME")) == NULL) {
 			if (((h = getlogin()) != NULL &&
 			     (pwd = getpwnam(h)) != NULL) ||

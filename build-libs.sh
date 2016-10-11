@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ARGS=$(getopt -o "dca" -l "debug,clean,a" -n "build-libs.sh" -- "$@");
+ARGS=$(getopt -o "dca" -l "debug,clean,archive" -n "build-libs.sh" -- "$@");
 
 eval set -- "$ARGS";
 
@@ -22,6 +22,11 @@ while true; do
     -c|--clean)
       shift
       JNI_ARGS="$JNI_ARGS clean"
+      break;
+      ;;
+    -a|--archive)
+      shift
+      EXPORT_AAR=1
       break;
       ;;
     --)
