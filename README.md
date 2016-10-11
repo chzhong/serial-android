@@ -14,8 +14,8 @@ This library is based on wjwwood's cross-platform serial library  https://github
 
 ### Dependencies
 
-* NDK r10 (http://developer.android.com/intl/zh-cn/ndk/downloads/index.html)
-* Android Studio
+* NDK r13
+* Android Studio 2.2.1
 
 ### Install
 
@@ -30,7 +30,9 @@ Android Studio NDK support is still in beta, so please build the so files using 
     cd android/library/src/main/jni
     ./build-jni.sh
 
-Any change to native code it build with Android Studio are welcome
+Any change to native code it build with Android Studio are welcome.
+
+NOTE: There might be some issue while building with different NDK revisions. 
 
 Use:
 
