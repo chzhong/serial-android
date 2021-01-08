@@ -34,6 +34,6 @@ captures/
 # IDEA/Android Studio project folder
 .idea/
 *.iml
-gradle/
+#gradle/
 gradlew
 gradlew.bat

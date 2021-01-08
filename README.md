@@ -1,9 +1,10 @@
-# Serial Port communication library for Android (with Java API)
+# Serial Port communication library for Android (with Java API) - 2021 Update
 
 This is a serial port library for Android, with both JNI API and Java API.
 
 The Java API is bridged to JNI implementation, and not all of the API is strictly tested. Use it at your own risk.
 
+This library is a fork of library  https://github.com/chzhong/serial-android and it is updated to work with Android Studio 4.1
 This library is based on wjwwood's cross-platform serial library  https://github.com/wjwwood/serial.
 
 
@@ -15,7 +16,10 @@ This library is based on wjwwood's cross-platform serial library  https://github
 ### Dependencies
 
 * NDK r13
-* Android Studio 2.2.1
+* Android Studio 4.1.0
+* Android Api 28
+* Java SDK 1.8
+* Gradle 6.5
 
 ### Install
 
@@ -38,6 +42,16 @@ Use:
 
 * Use it directly in your native code.
 * Import it as an Android Library project.
+
+
+### Build
+
+Run build task from gradle at
+
+    serial-android/Tasks/build/build
+
+You can find the result in serial-android\libserial\build\outputs\aar folder.
+
 
 ### License
 
