@@ -6,6 +6,10 @@ The Java API is bridged to JNI implementation, and not all of the API is strictl
 
 This library is based on wjwwood's cross-platform serial library  https://github.com/wjwwood/serial.
 
+### NOT UNDERT MAINTIANCE
+I'm too busy to maintain this open source project.
+You can fork and made any changes whenever needed.
+
 
 ### Documentation
 
