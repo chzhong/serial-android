@@ -1,0 +1,43 @@
+LIBNATIVEHELPER_S { # introduced=S
+  global:
+    # NDK API for libnativehelper.
+    AFileDescriptor_create;
+    AFileDescriptor_getFd;
+    AFileDescriptor_setFd;
+    # AFileDescriptor_getFD is deprecated pending removal (b/185256332).
+    AFileDescriptor_getFD;
+    # AFileDescriptor_setFD is deprecated pending removal (b/185256332).
+    AFileDescriptor_setFD;
+
+    # JNI Invocation methods available to platform and apps.
+    JNI_CreateJavaVM;
+    JNI_GetDefaultJavaVMInitArgs;
+    JNI_GetCreatedJavaVMs;
+
+    # API for platform and modules only.
+    jniRegisterNativeMethods; # apex
+    jniThrowException; # apex
+    jniThrowExceptionFmt; # apex
+    jniThrowNullPointerException; # apex
+    jniThrowRuntimeException; # apex
+    jniThrowIOException; # apex
+    jniThrowErrnoException; # apex
+    jniCreateFileDescriptor; # apex
+    jniGetFDFromFileDescriptor; # apex
+    jniSetFileDescriptorOfFD; # apex
+    jniGetNioBufferBaseArray; # apex
+    jniGetNioBufferBaseArrayOffset; # apex
+    jniGetNioBufferPointer; # apex
+    jniGetNioBufferFields; # apex
+    jniCreateString; # apex
+    jniLogException; # apex
+    jniUninitializeConstants; # apex
+
+    JniInvocationCreate; # apex
+    JniInvocationDestroy; # apex
+    JniInvocationInit; # apex
+    JniInvocationGetLibrary; # apex
+
+  local:
+    *;
+};

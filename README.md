@@ -18,8 +18,7 @@ You can fork and made any changes whenever needed.
 
 ### Dependencies
 
-* NDK r13
-* Android Studio 2.2.1
+* NDK r21e
 
 ### Install
 

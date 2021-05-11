@@ -20,13 +20,16 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := nativehelper
 LOCAL_CLANG := true
 LOCAL_C_INCLUDES := \
-    $(LOCAL_PATH)/include/nativehelper
+    $(LOCAL_PATH)/header_only_include/nativehelper $(LOCAL_PATH)/include
 LOCAL_SRC_FILES := \
-    JNIHelp.cpp \
-    JniConstants.cpp \
-    toStringArray.cpp
+    DlHelp.c \
+    ExpandableString.c \
+    JNIHelp.c \
+    JNIPlatformHelp.c \
+    JniConstants.c \
+    JniInvocation.c
 
-LOCAL_EXPORT_CPPFLAGS := -I$(LOCAL_PATH)/include
+LOCAL_EXPORT_CPPFLAGS := -I$(LOCAL_PATH)/header_only_include -I$(LOCAL_PATH)/include
 LOCAL_CFLAGS := -Werror
 LOCAL_SRC_FILES := $(LOCAL_SRC_FILES)
 #LOCAL_LDFLAGS := -llog -ldl

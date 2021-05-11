@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Android",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/opt/android-ndk-r21e/sysroot/usr/include",
+                "/opt/android-ndk-r21e/sources/cxx-stl/llvm-libc++/include"
+            ],
+            "defines": [],
+            "compilerPath": "/opt/android-ndk-r21e/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android28-clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "clang-x64",
+            "configurationProvider": "vector-of-bool.cmake-tools"
+        }
+    ],
+    "version": 4
+   }

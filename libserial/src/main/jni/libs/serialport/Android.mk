@@ -6,8 +6,7 @@ LOCAL_MODULE := serialport
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH)/include
 	
-LOCAL_SRC_FILES := glob.c \
-    serial.cc \
+LOCAL_SRC_FILES := serial.cc \
     serial_unix.cc \
     list_ports_linux.cc
 
