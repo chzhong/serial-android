@@ -14,131 +14,58 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "NativeBridge_test"
+#include "../JniInvocation-priv.h"
 
-#include <JniInvocation.h>
 #include <gtest/gtest.h>
+#include <jni.h>
 
 
-#include "string.h"
-
-#if defined(HAVE_ANDROID_OS) && defined(__BIONIC__)
-#define HAVE_TEST_STUFF 1
-#else
-#undef HAVE_TEST_STUFF
-#endif
-
-#ifdef HAVE_TEST_STUFF
-
-// Ability to have fake local system properties.
-#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
-#include <sys/_system_properties.h>
-
-extern void *__system_property_area__;
-
-struct LocalPropertyTestState {
-    LocalPropertyTestState() : valid(false) {
-        const char* ANDROID_DATA = getenv("ANDROID_DATA");
-        char dir_template[PATH_MAX];
-        snprintf(dir_template, sizeof(dir_template), "%s/local/tmp/prop-XXXXXX", ANDROID_DATA);
-        char* dirname = mkdtemp(dir_template);
-        if (!dirname) {
-            fprintf(stderr, "making temp file for test state failed (is %s writable?): %s",
-                    dir_template, strerror(errno));
-            return;
-        }
-
-        old_pa = __system_property_area__;
-        __system_property_area__ = NULL;
-
-        pa_dirname = dirname;
-        pa_filename = pa_dirname + "/__properties__";
-
-        __system_property_set_filename(pa_filename.c_str());
-        __system_property_area_init();
-        valid = true;
-    }
-
-    ~LocalPropertyTestState() {
-        if (!valid) {
-            return;
-        }
-
-        __system_property_area__ = old_pa;
-
-        __system_property_set_filename(PROP_FILENAME);
-        unlink(pa_filename.c_str());
-        rmdir(pa_dirname.c_str());
-    }
-public:
-    bool valid;
-private:
-    std::string pa_dirname;
-    std::string pa_filename;
-    void *old_pa;
-};
-#endif
-
-namespace android {
-
-class JNIInvocationTest : public testing::Test {
-};
-
-#ifdef HAVE_TEST_STUFF
-static const char* kDebuggableSystemProperty = "ro.debuggable";
-static const char* kIsDebuggableValue = "1";
-static const char* kIsNotDebuggableValue = "0";
-
-static const char* kLibrarySystemProperty = "persist.sys.dalvik.vm.lib.2";
+static const char* kDefaultJniInvocationLibrary = "libart.so";
 static const char* kTestNonNull = "libartd.so";
 static const char* kTestNonNull2 = "libartd2.so";
-static const char* kExpected = "libart.so";
-#endif
 
-TEST_F(JNIInvocationTest, Debuggable) {
-#ifdef HAVE_TEST_STUFF
-    LocalPropertyTestState pa;
-    ASSERT_TRUE(pa.valid);
-    ASSERT_EQ(0, __system_property_add(kDebuggableSystemProperty, 13, kIsDebuggableValue, 1));
-    ASSERT_EQ(0, __system_property_add(kLibrarySystemProperty, 27, kTestNonNull2, 11));
+TEST(JNIInvocation, Debuggable) {
+    const char* result = JniInvocationGetLibraryWith(nullptr, true, kTestNonNull2);
+    EXPECT_STREQ(result, kTestNonNull2);
 
-    const char* result = JniInvocation::GetLibrary(NULL);
-    EXPECT_FALSE(result == NULL);
-    if (result != NULL) {
-        EXPECT_TRUE(strcmp(result, kTestNonNull2) == 0);
-        EXPECT_FALSE(strcmp(result, kExpected) == 0);
-    }
+    result = JniInvocationGetLibraryWith(kTestNonNull, true, kTestNonNull2);
+    EXPECT_STREQ(result, kTestNonNull);
 
-    result = JniInvocation::GetLibrary(kTestNonNull);
-    EXPECT_FALSE(result == NULL);
-    if (result != NULL) {
-        EXPECT_TRUE(strcmp(result, kTestNonNull) == 0);
-        EXPECT_FALSE(strcmp(result, kTestNonNull2) == 0);
-    }
-#endif
+    result = JniInvocationGetLibraryWith(kTestNonNull, true, nullptr);
+    EXPECT_STREQ(result, kTestNonNull);
+
+    result = JniInvocationGetLibraryWith(nullptr, true, nullptr);
+    EXPECT_STREQ(result, kDefaultJniInvocationLibrary);
 }
 
-TEST_F(JNIInvocationTest, NonDebuggable) {
-#ifdef HAVE_TEST_STUFF
-    LocalPropertyTestState pa;
-    ASSERT_TRUE(pa.valid);
-    ASSERT_EQ(0, __system_property_add(kDebuggableSystemProperty, 13, kIsNotDebuggableValue, 1));
+TEST(JNIInvocation, NonDebuggable) {
+    const char* result = JniInvocationGetLibraryWith(nullptr, false, kTestNonNull2);
+    EXPECT_STREQ(result, kDefaultJniInvocationLibrary);
 
-    const char* result = JniInvocation::GetLibrary(NULL);
-    EXPECT_FALSE(result == NULL);
-    if (result != NULL) {
-        EXPECT_TRUE(strcmp(result, kExpected) == 0);
-        EXPECT_FALSE(strcmp(result, kTestNonNull) == 0);
-        EXPECT_FALSE(strcmp(result, kTestNonNull2) == 0);
-    }
+    result = JniInvocationGetLibraryWith(kTestNonNull, false, kTestNonNull2);
+    EXPECT_STREQ(result, kDefaultJniInvocationLibrary);
 
-    result = JniInvocation::GetLibrary(kTestNonNull);
-    EXPECT_FALSE(result == NULL);
-    if (result != NULL) {
-        EXPECT_TRUE(strcmp(result, kExpected) == 0);
-        EXPECT_FALSE(strcmp(result, kTestNonNull) == 0);
-    }
-#endif
+    result = JniInvocationGetLibraryWith(kTestNonNull, false, nullptr);
+    EXPECT_STREQ(result, kDefaultJniInvocationLibrary);
+
+    result = JniInvocationGetLibraryWith(nullptr, false, nullptr);
+    EXPECT_STREQ(result, kDefaultJniInvocationLibrary);
 }
 
-}  // namespace android
+TEST(JNIInvocation, GetDefaultJavaVMInitArgsBeforeInit) {
+    EXPECT_DEATH(JNI_GetDefaultJavaVMInitArgs(nullptr), "Runtime library not loaded.");
+}
+
+TEST(JNIInvocation, CreateJavaVMBeforeInit) {
+    JavaVM *vm;
+    JNIEnv *env;
+    EXPECT_DEATH(JNI_CreateJavaVM(&vm, &env, nullptr), "Runtime library not loaded.");
+}
+
+TEST(JNIInvocation, GetCreatedJavaVMsBeforeInit) {
+    jsize vm_count;
+    JavaVM *vm;
+    int status = JNI_GetCreatedJavaVMs(&vm, 1, &vm_count);
+    EXPECT_EQ(status, JNI_OK);
+    EXPECT_EQ(vm_count, 0);
+}

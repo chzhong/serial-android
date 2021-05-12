@@ -1,9 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    // Choose your Build Tool
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 30
 
     //useDeprecatedNdk true
 
@@ -20,8 +18,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 23
+        minSdkVersion 28
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
     }
@@ -39,13 +37,13 @@ android {
         incremental true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 //apply from: '../gradle-maven-push.gradle'

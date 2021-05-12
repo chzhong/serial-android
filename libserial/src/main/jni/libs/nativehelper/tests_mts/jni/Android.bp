@@ -1,0 +1,56 @@
+// Copyright (C) 2020 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package {
+    // http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // the below license kinds from "libnativehelper_license":
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["libnativehelper_license"],
+}
+
+cc_defaults {
+    name: "libnativehelper_jni_defaults",
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+    srcs: [
+        "jni_invocation_test.cpp",
+        "jni_helper_jni.cpp",
+        "libnativehelper_test.cpp",
+    ],
+    shared_libs: ["liblog"],
+    static_libs: ["libgmock_ndk"],
+    stl: "c++_static",
+    // libnativetesthelper_jni depends on libnativehelper_compat_libc++.
+    // At the time of writing there is no duplicated global state in the
+    // libnativehelper sources between these functions. Should this change,
+    // then there could be ODR problems here.
+    whole_static_libs: ["libnativetesthelper_jni"],
+    tidy: true,
+}
+
+cc_library_shared {
+    name: "libnativehelper_mts_jni",
+    defaults: ["libnativehelper_jni_defaults"],
+    shared_libs: ["libnativehelper"],
+}
+
+cc_library_shared {
+    name: "libnativehelper_lazy_mts_jni",
+    defaults: ["libnativehelper_jni_defaults"],
+    static_libs: ["libnativehelper_lazy"],
+}

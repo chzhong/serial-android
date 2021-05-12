@@ -1,0 +1,72 @@
+// Copyright (C) 2020 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package {
+    // http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // the below license kinds from "libnativehelper_license":
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["libnativehelper_license"],
+}
+
+java_defaults {
+    name: "mts_libnativehelper_defaults",
+    compile_multilib: "both",
+    libs: [
+        "android.test.base.stubs",
+    ],
+    static_libs: [
+        "ctstestrunner-axt",
+        "nativetesthelper",
+    ],
+    jni_uses_platform_apis: true,
+    sdk_version: "test_current",
+    srcs: ["src/com/android/art/libnativehelper/JniHelpTest.java"],
+    test_suites: [
+        "device-tests",
+        "mts",
+    ],
+}
+
+android_test {
+    name: "MtsLibnativehelperTestCases",
+    defaults: [
+        "cts_defaults",
+        "mts_libnativehelper_defaults",
+    ],
+    jni_libs: [
+        "libnativehelper_mts_jni",
+    ],
+    manifest: "AndroidManifest.xml",
+    srcs: [
+        "src/com/android/art/libnativehelper/LibnativehelperGTests.java",
+    ],
+}
+
+// Same tests as "MtsLibnativehelperTestCases", but with the jni library
+// linked against libnativehelper_lazy.a rather than libnativehelper.so.
+
+android_test {
+    name: "MtsLibnativehelperLazyTestCases",
+    defaults: [
+        "cts_defaults",
+        "mts_libnativehelper_defaults",
+    ],
+    jni_libs: [
+        "libnativehelper_lazy_mts_jni",
+    ],
+    srcs: [
+        "src/com/android/art/libnativehelper/LibnativehelperLazyGTests.java",
+    ],
+}

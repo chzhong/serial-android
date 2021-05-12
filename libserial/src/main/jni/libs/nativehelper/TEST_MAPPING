@@ -1,0 +1,19 @@
+{
+  "presubmit": [
+    {
+      "name": "libnativehelper_tests"
+    },
+    {
+      "name": "libnativehelper_lazy_tests"
+    },
+    {
+      "name": "MtsLibnativehelperTestCases"
+    },
+    {
+      "name": "MtsLibnativehelperLazyTestCases"
+    },
+    {
+      "name": "CtsLibnativehelperTestCases"
+    }
+  ]
+}

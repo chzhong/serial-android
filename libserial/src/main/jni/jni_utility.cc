@@ -24,6 +24,7 @@
  */
 
 #include <jni_utility.h>
+#include <stdlib.h>
 
 static JavaVM* jvm = 0;
 static jobject gClassLoader;
@@ -93,7 +94,7 @@ jclass findClass(const char* name, int flags /*= FIND_CLASS_USE_CLASS_LOADER*/)
     	cls = env->FindClass(name);
     }
     checkException(env);
-    
+
     if ((flags & FIND_CLASS_RETURN_GLOBAL_REF) == FIND_CLASS_RETURN_GLOBAL_REF) {
         jclass localClass = cls;
         cls = (jclass)env->NewGlobalRef(localClass);

@@ -1,0 +1,245 @@
+// Copyright (C) 2009 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package {
+    default_applicable_licenses: ["libnativehelper_license"],
+}
+
+// Added automatically by a large-scale-change
+// http://go/android-license-faq
+license {
+    name: "libnativehelper_license",
+    visibility: [":__subpackages__"],
+    license_kinds: [
+        "SPDX-license-identifier-Apache-2.0",
+    ],
+    license_text: [
+        "NOTICE",
+    ],
+}
+
+cc_defaults {
+    name: "libnativehelper_defaults",
+    cflags: [
+        "-fvisibility=protected",
+        "-std=c11",
+    ],
+    shared_libs: ["liblog"],
+}
+
+cc_library_headers {
+    name: "jni_headers",
+    host_supported: true,
+    export_include_dirs: ["include_jni"],
+    native_bridge_supported: true,
+    vendor_available: true,
+    target: {
+        windows: {
+            enabled: true,
+        },
+    },
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    // recovery_available currently required for libchrome (https://r.android.com/799940).
+    recovery_available: true,
+    visibility: ["//visibility:public"],
+    stl: "none",
+    system_shared_libs: [],
+    // The minimum sdk version required by users of this module.
+    sdk_version: "minimum",
+    // As part of mainline modules(APEX), it should support at least 29(Q)
+    min_sdk_version: "29",
+}
+
+cc_library_headers {
+    name: "libnativehelper_header_only",
+    host_supported: true,
+    export_include_dirs: [
+        "header_only_include",
+    ],
+    header_libs: ["jni_headers"],
+    export_header_lib_headers: ["jni_headers"],
+    // As part of mainline modules(APEX), it should support at least 29(Q)
+    min_sdk_version: "29",
+    sdk_version: "minimum",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+cc_library_headers {
+    name: "jni_platform_headers",
+    host_supported: true,
+    export_include_dirs: [
+        "include_platform_header_only",
+    ],
+    header_libs: ["jni_headers"],
+    export_header_lib_headers: ["jni_headers"],
+    sdk_version: "minimum",
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.art",
+        "com.android.art.debug",
+    ],
+    min_sdk_version: "S",
+}
+
+cc_library_shared {
+    name: "libnativehelper",
+    defaults: ["libnativehelper_defaults"],
+    bootstrap: false,
+    host_supported: true,
+    srcs: [
+        "DlHelp.c",
+        "ExpandableString.c",
+        "JNIHelp.c",
+        "JNIPlatformHelp.c",
+        "JniConstants.c",
+        "JniInvocation.c",
+    ],
+    export_include_dirs: [
+        "header_only_include",
+        "include",
+        "include_jni",
+        "include_platform",
+        "include_platform_header_only",
+    ],
+    stl: "none",
+    stubs: {
+        symbol_file: "libnativehelper.map.txt",
+        versions: ["S"],
+    },
+    target: {
+        android: {
+            // FileDescriptor NDK API is Android-only.
+            srcs: ["file_descriptor_jni.c"],
+        },
+    },
+    // Only distributed in the ART Module.
+    apex_available: [
+        "com.android.art",
+        "com.android.art.debug",
+    ],
+    min_sdk_version: "S",
+}
+
+// Lazy loading version of libnativehelper that can be used by code
+// that is running before the ART APEX is mounted and
+// libnativehelper.so is available.
+cc_library_static {
+    name: "libnativehelper_lazy",
+    defaults: ["libnativehelper_defaults"],
+    bootstrap: true,
+    host_supported: true,
+    export_include_dirs: [
+        "header_only_include",
+        "include",
+        "include_jni",
+        "include_platform",
+        "include_platform_header_only",
+    ],
+    apex_available: ["//apex_available:platform"],
+    srcs: ["libnativehelper_lazy.c"],
+    target: {
+        linux: {
+            version_script: "libnativehelper.map.txt",
+        },
+    },
+}
+
+//
+// NDK-only build for the target (device), using libc++.
+// - Relies only on NDK exposed functionality.
+// - This doesn't include JniInvocation.
+//
+
+cc_library_shared {
+    name: "libnativehelper_compat_libc++",
+    defaults: ["libnativehelper_defaults"],
+    header_libs: ["jni_headers"],
+    cflags: ["-Werror"],
+    export_header_lib_headers: ["jni_headers"],
+    export_include_dirs: [
+        "header_only_include",
+        "include",
+    ],
+    local_include_dirs: [
+        "header_only_include",
+        "include_platform_header_only",
+    ],
+    srcs: [
+        "ExpandableString.c",
+        "JNIHelp.c",
+    ],
+    sdk_version: "19",
+    stl: "none",
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.extservices",
+        "com.android.tethering",
+    ],
+    visibility: [
+        "//art:__subpackages__",
+        "//cts:__subpackages__",
+        "//external/perfetto:__subpackages__",
+        "//frameworks/base/tests/net/integration:__pkg__",
+        "//frameworks/base/packages/Tethering:__subpackages__",
+        "//packages/modules/Connectivity/tests:__subpackages__",
+        "//packages/modules/Connectivity/Tethering:__subpackages__",
+        "//packages/modules/ExtServices:__subpackages__",
+        "//packages/modules/NetworkStack:__subpackages__",
+        ":__subpackages__",
+    ],
+}
+
+// The NDK module definitions reside in
+// system/extras/module_ndk_libs/libnativehelper in platform, with copies of
+// these headers and map.txt. Any changes here should be synced there and vice
+// versa.
+//
+// TODO(b/170644498): Improve tooling to remove this duplication.
+//
+// ndk_headers {
+//     name: "ndk_jni.h",
+//     from: "include_jni",
+//     to: "",
+//     srcs: ["include_jni/jni.h"],
+//     license: "NOTICE",
+// }
+//
+// ndk_headers {
+//     name: "libnativehelper_ndk_headers",
+//     from: "include",
+//     to: "",
+//     srcs: ["include/android/*.h"],
+//     license: "NOTICE",
+// }
+//
+// ndk_library {
+//     name: "libnativehelper",
+//     symbol_file: "libnativehelper.map.txt",
+//     first_version: "S",
+// }
+
+//
+// Tests.
+//
+
+subdirs = [
+    "tests",
+    "tests_mts",
+]

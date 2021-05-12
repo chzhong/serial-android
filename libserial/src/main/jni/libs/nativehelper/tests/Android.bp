@@ -1,0 +1,103 @@
+// Build the unit tests.
+
+package {
+    // http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // the below license kinds from "libnativehelper_license":
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["libnativehelper_license"],
+}
+
+cc_defaults {
+    name: "libnativehelper_test_defaults",
+    cflags: [
+        // Base set of cflags used by all things ART.
+        "-fno-rtti",
+        "-ggdb3",
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+        "-Wstrict-aliasing",
+        "-fstrict-aliasing",
+        "-Wunreachable-code",
+        "-Wredundant-decls",
+        "-Wshadow",
+        "-Wunused",
+        "-fvisibility=protected",
+
+        // Warn about thread safety violations with clang.
+        "-Wthread-safety",
+        "-Wthread-safety-negative",
+
+        // Warn if switch fallthroughs aren't annotated.
+        "-Wimplicit-fallthrough",
+
+        // Enable float equality warnings.
+        "-Wfloat-equal",
+
+        // Enable warning of converting ints to void*.
+        "-Wint-to-void-pointer-cast",
+
+        // Enable warning for deprecated language features.
+        "-Wdeprecated",
+
+        // Disable warning from external/libcxxabi/include/cxxabi.h
+        "-Wno-deprecated-dynamic-exception-spec",
+
+        // Enable warning for unreachable break & return.
+        "-Wunreachable-code-break",
+        "-Wunreachable-code-return",
+
+        // Enable thread annotations for std::mutex, etc.
+        "-D_LIBCPP_ENABLE_THREAD_SAFETY_ANNOTATIONS",
+    ],
+    host_supported: true,
+    test_options: {
+        unit_test: true,
+    },
+    tidy: true,
+}
+
+cc_test {
+    name: "libnativehelper_tests",
+    defaults: ["libnativehelper_test_defaults"],
+    test_suites: ["device-tests"],
+    srcs: [
+        "scoped_local_frame_test.cpp",
+        "scoped_local_ref_test.cpp",
+        "scoped_primitive_array_test.cpp",
+        "libnativehelper_api_test.c",
+        "JniSafeRegisterNativeMethods_test.cpp",
+    ],
+    shared_libs: ["libnativehelper"],
+}
+
+cc_test {
+    name: "libnativehelper_lazy_tests",
+    defaults: ["libnativehelper_test_defaults"],
+    test_suites: ["device-tests"],
+    srcs: ["libnativehelper_lazy_test.cpp"],
+    shared_libs: ["liblog"],
+    static_libs: ["libnativehelper_lazy"],
+}
+
+// Tests for internal functions that aren't present in the APEX stub API. Use
+// `bootstrap:true` to bypass the stub library. This test won't link when
+// prebuilts are preferred, because we cannot link against the source variant
+// then.
+// TODO(b/180107266): Enable in TEST_MAPPING. Also use a better way than
+// `bootstrap:true` - `test_for` ought to work but fails because the test is
+// host enabled so host variants of the APEXes are expected.
+cc_test {
+    name: "libnativehelper_internal_tests",
+    defaults: [
+        "art_module_source_build_defaults",
+        "libnativehelper_test_defaults",
+    ],
+    srcs: [
+        "ExpandableString_test.cpp",
+        "JniInvocation_test.cpp",
+    ],
+    bootstrap: true,
+    shared_libs: ["libnativehelper"],
+}
