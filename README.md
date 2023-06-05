@@ -1,48 +1,43 @@
-# Serial Port communication library for Android (with Java API)
+# Serial Port Comms for Android - Java
 
-This is a serial port library for Android, with both JNI API and Java API.
+This is a serial port communications library for Android with Java API on top of C++ implementation with JNI interface.
 
-The Java API is bridged to JNI implementation, and not all of the API is strictly tested. Use it at your own risk.
+The underlying implementation is wjwwood's cross-platform serial library https://github.com/wjwwood/serial.
 
-This library is based on wjwwood's cross-platform serial library  https://github.com/wjwwood/serial.
+[TOC]
 
-### NOT UNDERT MAINTIANCE
-I'm too busy to maintain this open source project.
-You can fork and made any changes whenever needed.
+# Technology
 
+* Android
+* Native Development Kit (NDK)
+* Java
+* C++
 
-### Documentation
+# Source Code
 
-* Native API: See original C++ document at http://wjwwood.github.com/serial/
-* Java API: See javadoc in source files.
+    git clone https://github.com/stevebroshar/serial-android.git
 
-### Dependencies
+# Debug
 
-* NDK r21e
+Run in Android Studio.
 
-### Install
+# Consume
 
-Get the code:
+Add the source files to your project or import it as an Android Library project.
 
-    git clone https://github.com/chzhong/serial-android.git
+# Contributors
 
-Build Native Code:
+William Woodall <wjwwood@gmail.com>
 
-Android Studio NDK support is still in beta, so please build the so files using ndk-build:
+John Harrison <ash.gti@gmail.com>
 
-    cd android/library/src/main/jni
-    ./build-jni.sh
+Cheng Zhong <hust.zcheng@gmail.com>
 
-Any change to native code it build with Android Studio are welcome.
+Steve Broshar mister.broshar@gmail.com
 
-NOTE: There might be some issue while building with different NDK revisions. 
+# License
 
-Use:
-
-* Use it directly in your native code.
-* Import it as an Android Library project.
-
-### License
+## wjwwood's cross-platform serial library
 
 The MIT License
 
@@ -54,15 +49,4 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-### Authors
-
-William Woodall <wjwwood@gmail.com>
-John Harrison <ash.gti@gmail.com>
-
-Cheng Zhong <hust.zcheng@gmail.com>
-
-### Contact
-
-William Woodall <william@osrfoundation.org>
-
-Cheng Zhong <hust.zcheng@gmail.com>
+# 
